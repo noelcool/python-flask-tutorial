@@ -1,15 +1,24 @@
-#import sqlite3
 import pymysql
-
 import click
+import configparser
+import json
 from flask import current_app, g
 from flask.cli import with_appcontext
 
 
 def get_db():
     if 'db' not in g:
-        conn = pymysql.\
-            connect(host='127.0.0.1', user='root', db='python_test', password='123456', port=3307, charset='utf8')
+        with open('config.json', 'r') as f:
+            config = json.load(f)
+
+        profile = config['local']
+        conn = pymysql. \
+            connect(host=profile['host'],
+                    user=profile['user'],
+                    db=profile['database'],
+                    password=profile['password'],
+                    port=profile['port'],
+                    charset='utf8')
         g.db = conn.cursor(pymysql.cursors.DictCursor)
     return g.db
 
