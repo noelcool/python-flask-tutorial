@@ -7,6 +7,13 @@ CREATE TABLE user (
   password TEXT NOT NULL
 );
 
+-- CREATE TABLE `user` (
+--   `id` INTEGER NOT NULL AUTO_INCREMENT,
+--   `username` TEXT UNIQUE NOT NULL,
+--   `password` TEXT NOT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE post (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author_id INTEGER NOT NULL,
@@ -15,3 +22,13 @@ CREATE TABLE post (
   body TEXT NOT NULL,
   FOREIGN KEY(author_id) REFERENCES user (id)
 );
+
+-- CREATE TABLE `post` (
+--   `id` INTEGER NOT NULL AUTO_INCREMENT,
+--   `author_id` INTEGER NOT NULL,
+--   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   `title` TEXT NOT NULL,
+--   `body` TEXT NOT NULL,
+--   PRIMARY KEY (`id`),
+--   FOREIGN KEY(author_id) REFERENCES user (id)
+-- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

@@ -3,6 +3,10 @@ from flask import Flask
 
 
 def create_app(test_config=None):
+    import sys
+    from os import path
+    _path = path.dirname(path.dirname(path.abspath(__file__)))
+    sys.path.append(_path)
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
@@ -19,20 +23,23 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import db
+    from flaskr import db
     db.init_app(app)
 
-    from . import auth
-    app.register_blueprint(auth.bp) # authentication blueprint
-
-    return app
+    from flaskr import auth
+    app.register_blueprint(auth.bp)  # authentication blueprint
 
     @app.route('/hello')
     def hello():
         return 'Hello World'
 
-    from . import blog
+    from flaskr import blog
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index')
 
     return app
+
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run(host='0.0.0.0', port='5000', debug=True)

@@ -26,12 +26,11 @@ def register():
         elif not password:
             error = 'Password is required'
 
-        if error is not None:
+        if error is None:
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password))
-                )
+                q = "INSERT INTO user (username, password) VALUES(%s, %s)"
+                db.execute(q, (username, generate_password_hash(password)))
+                db.connection.commit()
             except db.IntegrityError:
                 error = f"User {username} is already registered."
             else:
@@ -48,9 +47,9 @@ def login():
         password = request.form['password']
         db = get_db()
         error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
+        q = "SELECT * FROM user WHERE username = %s"
+        db.execute(q, (username,))
+        user = db.fetchone()
 
         if user is None:
             error = 'Incorrect username'
@@ -73,9 +72,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        db = get_db()
+        q = "SELECT * FROM user WHERE id = %s"
+        db.execute(q, (user_id,))
+        g.user = db.fetchone()
 
 
 @bp.route('/logout')
